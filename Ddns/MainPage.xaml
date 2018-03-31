@@ -1,0 +1,45 @@
+﻿<Page
+    x:Class="Ddns.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Ddns"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="12,0">
+            <TextBlock Text="DDNS for he.net" FontSize="36" Margin="0,12"/>
+        </Grid>
+        <Grid Grid.Row="1" Margin="12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                <Rectangle Width="250" Height="1"/>
+                <TextBlock Text="Configure" FontSize="24" Margin="0,6"/>
+                <TextBox x:Name="hostNameBox" Header="Host name" Margin="0,6"/>
+                <PasswordBox x:Name="keyBox" Header="Key" Margin="0,6"/>
+                <CheckBox x:Name="autoUpdateCheckBox" Content="Update DNS automatedly" Margin="0,6"/>
+                <Button x:Name="submitButton" Content="Save" Margin="0,6" Click="SubmitButton_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Left">
+                <TextBlock Text="Status" FontSize="24" Margin="0,6"/>
+                <TextBlock Text="Local IP: " Margin="0,6,0,0"/>
+                <TextBlock x:Name="localIpBlock" Margin="0,0,0,6"/>
+                <TextBlock Text="Host:" Margin="0,6,0,0"/>
+                <TextBlock x:Name="hostBlock" Margin="0,0,0,6"/>
+                <TextBlock Text="DNS result" Margin="0,6,0,0"/>
+                <TextBlock x:Name="dnsResultBlock" Margin="0,0,0,6"/>
+                <Button x:Name="refreshStatusButton" Content="Refresh" Margin="0,6" Click="RefreshStatusButton_Click"/>
+                <Button x:Name="manualUpdateButton" Content="Update DNS now" Margin="0,6" Click="ManualUpdateButton_Click"/>
+                <TextBlock x:Name="manualUpdateResultBlock" Margin="0,6"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
