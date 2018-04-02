@@ -202,12 +202,14 @@ namespace Ddns
                 if (!BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == BackgroundTaskNames.NetworkStateChanged))
                 {
                     SystemTrigger networkTrigger = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
+                    SystemCondition internetCondition = new SystemCondition(SystemConditionType.InternetAvailable);
 
                     var builder = new BackgroundTaskBuilder
                     {
                         Name = BackgroundTaskNames.NetworkStateChanged
                     };
                     builder.SetTrigger(networkTrigger);
+                    builder.AddCondition(internetCondition);
                     BackgroundTaskRegistration task = builder.Register();
                 }
             }

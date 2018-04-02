@@ -115,24 +115,31 @@ namespace Ddns
                     var localIps = IPHelper.GetPublicIps();
                     StringBuilder toastText = new StringBuilder();
 
-                    string ipv4 = localIps.FirstOrDefault(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?.ToString();
-                    if (ipv4 != null)
+                    if (Settings.HostName == null || Settings.Key == null)
                     {
-                        var (ok, message) = await HeNetClient.UpdateIpAsync(Settings.HostName, Settings.Key, ipv4);
-                        if (ok)
-                            toastText.Append(string.Format("IPv4 DNS record is set to {0}.\n", ipv4));
-                        else
-                            toastText.Append(string.Format("IPv4 DNS update error. Message: {0}", message));
+                        toastText.Append("Auto update is enabled, but host name and key are not set properly.");
                     }
-
-                    string ipv6 = localIps.FirstOrDefault(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)?.ToString();
-                    if (ipv6 != null)
+                    else
                     {
-                        var (ok, message) = await HeNetClient.UpdateIpAsync(Settings.HostName, Settings.Key, ipv6);
-                        if (ok)
-                            toastText.Append(string.Format("IPv6 DNS record is set to {0}.\n", ipv6));
-                        else
-                            toastText.Append(string.Format("IPv6 DNS update error. Message: {0}", message));
+                        string ipv4 = localIps.FirstOrDefault(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?.ToString();
+                        if (ipv4 != null)
+                        {
+                            var (ok, message) = await HeNetClient.UpdateIpAsync(Settings.HostName, Settings.Key, ipv4);
+                            if (ok)
+                                toastText.Append(string.Format("IPv4 DNS record is set to {0}.\n", ipv4));
+                            else
+                                toastText.Append(string.Format("IPv4 DNS update error. Message: {0}", message));
+                        }
+
+                        string ipv6 = localIps.FirstOrDefault(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)?.ToString();
+                        if (ipv6 != null)
+                        {
+                            var (ok, message) = await HeNetClient.UpdateIpAsync(Settings.HostName, Settings.Key, ipv6);
+                            if (ok)
+                                toastText.Append(string.Format("IPv6 DNS record is set to {0}.\n", ipv6));
+                            else
+                                toastText.Append(string.Format("IPv6 DNS update error. Message: {0}", message));
+                        }
                     }
 
                     if (toastText.ToString().EndsWith('\n'))
@@ -162,6 +169,26 @@ namespace Ddns
                     ToastNotificationManager.History.RemoveGroup(NotificationGroups.NetworkChanged);
                     ToastNotificationManager.CreateToastNotifier().Show(toastNotification);
                 }
+            }
+            catch (Exception ex)
+            {
+                var toastContent = new ToastContent()
+                {
+                    Visual = new ToastVisual()
+                    {
+                        BindingGeneric = new ToastBindingGeneric()
+                        {
+                            Children =
+                            {
+                                new AdaptiveText(){Text = "Error in background task" },
+                                new AdaptiveText(){Text = ex.Message }
+                            }
+                        }
+                    }
+                };
+
+                var toastNotification = new ToastNotification(toastContent.GetXml());
+                ToastNotificationManager.CreateToastNotifier().Show(toastNotification);
             }
             finally
             {
